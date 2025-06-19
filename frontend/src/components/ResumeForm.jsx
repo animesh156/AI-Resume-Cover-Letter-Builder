@@ -1,39 +1,50 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
 import { FaUser, FaTools, FaBriefcase } from "react-icons/fa";
 import OutputPreview from "./OutputPreview";
 import { toast } from "react-toastify";
+import ClipLoader from "react-spinners/ClipLoader";
 
 function ResumeForm() {
   const [form, setForm] = useState({
     name: "",
     skills: "",
-    experience: ""
+    experience: "",
   });
 
-  const [summary, setSummary] = useState(""); // local summary state
+  const [summary, setSummary] = useState("");
+  const [loading, setLoading] = useState(false);
+  const outputRef = useRef();
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setSummary(""); // clear old resume
     try {
-      const res = await axios.post(`${import.meta.env.VITE_Backend_Url}/api/generate-resume`, {
-        ...form,
-        skills: form.skills.split(",").map((s) => s.trim())
-      });
-      setSummary(res.data.resume); // store the full resume (not just summary)
-      toast.success("Resume generated successfully")
-
+      const res = await axios.post(
+        `${import.meta.env.VITE_Backend_Url}/api/generate-resume`,
+        {
+          ...form,
+          skills: form.skills.split(",").map((s) => s.trim()),
+        }
+      );
+      setSummary(res.data.resume);
+      toast.success("✅ Resume generated successfully!");
+      setTimeout(() => {
+        outputRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 200);
     } catch (err) {
       console.log(err);
-
       if (err.response?.status === 429) {
-      toast.error("🚫 Daily limit reached. Try again tomorrow.");
-    } else {
-      toast.error("❌ Failed to generate resume. Please try again.");
-    }
+        toast.error("🚫 Daily limit reached. Try again tomorrow.");
+      } else {
+        toast.error("❌ Failed to generate resume. Please try again.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -101,17 +112,22 @@ function ResumeForm() {
           </div>
         </div>
 
-        {/* Submit */}
+        {/* Submit Button */}
         <button
           type="submit"
+          disabled={loading}
           className="bg-blue-600 hover:bg-blue-700 transition duration-300 text-white font-semibold px-6 py-3 rounded-lg w-full shadow-md"
         >
-          ✨ Generate Resume
+          {loading ? <ClipLoader size={20} color="#fff" /> : "✨ Generate Resume"}
         </button>
       </form>
 
-      {/* Output Preview */}
-      {summary && <OutputPreview summary={summary} />}
+      {/* Resume Output */}
+      {summary && (
+        <div ref={outputRef}>
+          <OutputPreview summary={summary} />
+        </div>
+      )}
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import axios from "axios";
 import OutputPreview from "../components/CoverLetterOutput";
 import { toast } from "react-toastify";
+import ClipLoader from "react-spinners/ClipLoader";
 
 function CoverLetterForm() {
   const [form, setForm] = useState({
@@ -13,8 +14,8 @@ function CoverLetterForm() {
   });
 
   const [letter, setLetter] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Ref to scroll into view
   const outputRef = useRef();
 
   const handleChange = (e) =>
@@ -22,6 +23,9 @@ function CoverLetterForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setLetter(""); // Clear old letter
+
     try {
       const payload = {
         ...form,
@@ -32,25 +36,25 @@ function CoverLetterForm() {
         payload
       );
       setLetter(res.data.letter);
-      toast.success("Cover letter generated successfully")
+      toast.success("✅ Cover letter generated successfully");
 
-      // Scroll to output after setting the letter
       setTimeout(() => {
         outputRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 100);
     } catch (err) {
       console.error(err);
-     if (err.response?.status === 429) {
-      toast.error("🚫 Daily limit reached. Try again tomorrow.");
-    } else {
-      toast.error("❌ Failed to generate cover letter. Please try again.");
-    }
+      if (err.response?.status === 429) {
+        toast.error("🚫 Daily limit reached. Try again tomorrow.");
+      } else {
+        toast.error("❌ Failed to generate cover letter. Please try again.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      {/* Form */}
+    <div className="space-y-8">
       <form
         onSubmit={handleSubmit}
         className="bg-white shadow-md p-6 border border-green-300 rounded-2xl mt-8 space-y-4"
@@ -98,13 +102,17 @@ function CoverLetterForm() {
 
         <button
           type="submit"
-          className="bg-green-600 text-white w-full py-2 rounded hover:bg-green-700"
+          disabled={loading}
+          className="bg-green-600 text-white w-full py-2 rounded hover:bg-green-700 flex justify-center items-center"
         >
-          🧠 Generate Cover Letter
+          {loading ? (
+            <ClipLoader color="#fff" size={20} />
+          ) : (
+            "🧠 Generate Cover Letter"
+          )}
         </button>
       </form>
 
-      {/* Output Preview */}
       {letter && (
         <div ref={outputRef} className="mt-8">
           <OutputPreview letter={letter} />
