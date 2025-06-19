@@ -1,4 +1,4 @@
-const {generateResponse} = require('../services/geminiService');
+const {generateResponse} = require('../utils/gemini');
 
 const generateResumeSummary = async (req,res) => {
     const {name, skills, experience} = req.body;

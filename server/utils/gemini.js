@@ -1,22 +1,13 @@
-const {googleGenerativeAI} = require('@google/generative-ai');
+const {GoogleGenerativeAI} = require('@google/generative-ai');
 
-const genAI = new googleGenerativeAI(process.env.GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-const genrateResponse = async (prompt) => {
-    try {
-        const response = await genAI.generateContent({
-        model: 'gemini-1.5-pro',
-        prompt: prompt,
-        maxOutputTokens: 1024,
-        temperature: 0.7,
-        });
-        return response.candidates[0].content;
-    } catch (error) {
-        console.error('Error generating response:', error);
-        throw error;
-    }
+const generateResponse = async (prompt) => {
+   const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" });
+  const result = await model.generateContent(prompt);
+  return result.response.text();
 }
 
 module.exports = {
-    genrateResponse
+    generateResponse
 }
