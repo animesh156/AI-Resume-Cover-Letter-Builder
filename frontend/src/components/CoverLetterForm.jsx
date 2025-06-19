@@ -28,7 +28,7 @@ function CoverLetterForm() {
         skills: form.skills.split(",").map((s) => s.trim()),
       };
       const res = await axios.post(
-        "http://localhost:6884/api/generate-coverletter",
+        `${import.meta.env.VITE_Backend_Url}/api/generate-coverletter`,
         payload
       );
       setLetter(res.data.letter);

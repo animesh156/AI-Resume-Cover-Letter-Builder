@@ -19,7 +19,7 @@ function ResumeForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:6884/api/generate-resume", {
+      const res = await axios.post(`${import.meta.env.VITE_Backend_Url}/api/generate-resume`, {
         ...form,
         skills: form.skills.split(",").map((s) => s.trim())
       });

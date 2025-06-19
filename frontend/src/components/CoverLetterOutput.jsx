@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import html2pdf from "html2pdf.js";
+import { toast } from "react-toastify";
 
 const OutputPreviewCoverLetter = ({ letter }) => {
   const pdfRef = useRef();
@@ -28,10 +29,10 @@ const OutputPreviewCoverLetter = ({ letter }) => {
 
     try {
       await html2pdf().set(opt).from(pdfRef.current).save();
-      console.log("📄 Cover letter PDF successfully generated!");
+      toast.success("📄 Cover letter PDF successfully generated!");
     } catch (error) {
       console.error("❌ Error generating cover letter PDF:", error);
-      alert("Failed to generate PDF. Please check the console for details.");
+      toast.error("Failed to generate PDF. Please check the console for details.");
     }
   };
 

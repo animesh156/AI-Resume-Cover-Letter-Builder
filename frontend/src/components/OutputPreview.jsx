@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import html2pdf from "html2pdf.js";
+import { toast } from "react-toastify";
 
 const OutputPreview = ({ summary }) => {
   const pdfRef = useRef();
@@ -37,10 +38,11 @@ const OutputPreview = ({ summary }) => {
       // Use await to ensure the operation completes or throws an error
       await html2pdf().set(opt).from(pdfRef.current).save();
       console.log("PDF generation successful!");
+      toast.success("PDF generated successfully!")
     } catch (error) {
       console.error("Error generating PDF:", error);
       // You can also display an alert to the user
-      alert("Failed to generate PDF. Please check the console for details.");
+      toast.error("Failed to generate PDF. Please check the console for details.");
     }
   };
 
