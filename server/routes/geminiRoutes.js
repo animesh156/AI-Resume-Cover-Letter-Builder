@@ -1,11 +1,16 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const {generateResumeSummary, generateCoverletter} = require('../controllers/geminiController');
+const {
+  generateFullResume,
+  generateCoverLetter,
+} = require("../controllers/geminiController");
+
+const rateLimit = require("../middlewares/rateLimiter");
 
 // Route to generate resume summary
-router.post('/generate-resume', generateResumeSummary);
+router.post("/generate-resume", rateLimit, generateFullResume);
 
 // Route to generate cover letter
-router.post('/generate-coverletter', generateCoverletter);
+router.post("/generate-coverletter", rateLimit, generateCoverLetter);
 
-module.exports = router
+module.exports = router;

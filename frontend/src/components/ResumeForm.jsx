@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { FaUser, FaTools, FaBriefcase } from "react-icons/fa";
 import OutputPreview from "./OutputPreview";
+import { toast } from "react-toastify";
 
 function ResumeForm() {
   const [form, setForm] = useState({
@@ -23,10 +24,16 @@ function ResumeForm() {
         skills: form.skills.split(",").map((s) => s.trim())
       });
       setSummary(res.data.resume); // store the full resume (not just summary)
+      toast.success("Resume generated successfully")
 
     } catch (err) {
       console.log(err);
-      alert("❌ Failed to generate resume. Please check the server.");
+
+      if (err.response?.status === 429) {
+      toast.error("🚫 Daily limit reached. Try again tomorrow.");
+    } else {
+      toast.error("❌ Failed to generate resume. Please try again.");
+    }
     }
   };
 

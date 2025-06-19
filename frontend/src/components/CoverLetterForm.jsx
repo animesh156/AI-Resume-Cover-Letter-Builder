@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import axios from "axios";
 import OutputPreview from "../components/CoverLetterOutput";
+import { toast } from "react-toastify";
 
 function CoverLetterForm() {
   const [form, setForm] = useState({
@@ -31,6 +32,7 @@ function CoverLetterForm() {
         payload
       );
       setLetter(res.data.letter);
+      toast.success("Cover letter generated successfully")
 
       // Scroll to output after setting the letter
       setTimeout(() => {
@@ -38,7 +40,11 @@ function CoverLetterForm() {
       }, 100);
     } catch (err) {
       console.error(err);
-      alert("❌ Failed to generate cover letter.");
+     if (err.response?.status === 429) {
+      toast.error("🚫 Daily limit reached. Try again tomorrow.");
+    } else {
+      toast.error("❌ Failed to generate cover letter. Please try again.");
+    }
     }
   };
 
