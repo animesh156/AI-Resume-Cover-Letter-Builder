@@ -11,7 +11,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: "https://opencv-psi.vercel.app",
+    origin: "https://resume-builder-backend-7odt.onrender.com",
     credentials: true,
   })
 );

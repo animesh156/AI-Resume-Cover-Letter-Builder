@@ -21,7 +21,7 @@ function Register() {
     e.preventDefault();
     try {
       await axios.post(
-        `${import.meta.env.VITE_Backend_Url}/auth/register`,
+        `https://resume-builder-backend-7odt.onrender.com/auth/register`,
         form,
       );
 
@@ -42,7 +42,7 @@ function Register() {
       const token = await user.getIdToken();
 
       await axios.post(
-        `${import.meta.env.VITE_Backend_Url}/auth/firebase-login`,
+        `https://resume-builder-backend-7odt.onrender.com/auth/firebase-login`,
         { token },
       );
 
