@@ -56,9 +56,7 @@ function ResumeForm() {
       await axios.post(
         `${import.meta.env.VITE_Backend_Url}/auth/logout`,
         {},
-        {
-          withCredentials: true,
-        }
+       
       );
 
       toast.success("🚪 Logged out successfully!");
