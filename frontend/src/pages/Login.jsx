@@ -13,7 +13,7 @@ function Login() {
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`http://localhost:6884/auth/login`, {
+      await axios.post(`${import.meta.env.VITE_Backend_Url}/auth/login`, {
         email,
         password,
       },);
