@@ -9,7 +9,7 @@ export default function ProtectedRoute({ children }) {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_Backend_Url}/auth/check`, {
+      .get(`https://resume-builder-backend-7odt.onrender.com/auth/check`, {
         withCredentials: true,
       })
       .then(() => setAuthenticated(true))
