@@ -4,6 +4,7 @@ import { FaUser, FaTools, FaBriefcase } from "react-icons/fa";
 import OutputPreview from "./OutputPreview";
 import { toast } from "react-toastify";
 import ClipLoader from "react-spinners/ClipLoader";
+import { useNavigate } from "react-router-dom";
 
 function ResumeForm() {
   const [form, setForm] = useState({
@@ -15,6 +16,7 @@ function ResumeForm() {
   const [summary, setSummary] = useState("");
   const [loading, setLoading] = useState(false);
   const outputRef = useRef();
+  const navigate = useNavigate(); // For redirecting
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -22,14 +24,15 @@ function ResumeForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setSummary(""); // clear old resume
+    setSummary(""); // Clear old output
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_Backend_Url}/api/generate-resume`,
         {
           ...form,
           skills: form.skills.split(",").map((s) => s.trim()),
-        }
+        },
+        { withCredentials: true } // Important if using cookies
       );
       setSummary(res.data.resume);
       toast.success("✅ Resume generated successfully!");
@@ -48,8 +51,37 @@ function ResumeForm() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        `http://localhost:6884/auth/logout`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+
+      toast.success("🚪 Logged out successfully!");
+      navigate("/login"); // or home page
+    } catch (err) {
+      console.error(err);
+      toast.error("❌ Logout failed.");
+    }
+  };
+
   return (
     <div className="space-y-8">
+      {/* Logout Button */}
+      <div className="absolute right-6 ">
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded shadow"
+        >
+          Logout
+        </button>
+      </div>
+
+      {/* Resume Form */}
       <form
         onSubmit={handleSubmit}
         className="bg-gradient-to-br from-white to-blue-50 shadow-lg rounded-2xl px-8 py-10 space-y-6 border border-blue-200"
@@ -79,7 +111,8 @@ function ResumeForm() {
         {/* Skills */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Skills <span className="text-xs text-gray-500">(comma-separated)</span>
+            Skills{" "}
+            <span className="text-xs text-gray-500">(comma-separated)</span>
           </label>
           <div className="relative">
             <FaTools className="absolute left-3 top-3.5 text-gray-400" />
@@ -118,7 +151,11 @@ function ResumeForm() {
           disabled={loading}
           className="bg-blue-600 hover:bg-blue-700 transition duration-300 text-white font-semibold px-6 py-3 rounded-lg w-full shadow-md"
         >
-          {loading ? <ClipLoader size={20} color="#fff" /> : "✨ Generate Resume"}
+          {loading ? (
+            <ClipLoader size={20} color="#fff" />
+          ) : (
+            "✨ Generate Resume"
+          )}
         </button>
       </form>
 
