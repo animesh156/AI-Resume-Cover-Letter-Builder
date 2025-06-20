@@ -13,12 +13,10 @@ function Login() {
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${import.meta.env.VITE_Backend_Url}/auth/login`, {
+      await axios.post(`http://localhost:6884/auth/login`, {
         email,
         password,
-      },{
-         withCredentials: true,
-      });
+      },);
 
       toast.success("Logged in successfully");
       navigate("/resume");
@@ -39,15 +37,13 @@ function Login() {
     await axios.post(
   `${import.meta.env.VITE_Backend_Url}/auth/firebase-login`,
   { token },
-  {
-    withCredentials: true, // ✅ allows cookies to be sent/received
-  }
+ 
 );
 
       toast.success("Signed in with Google");
       navigate("/resume");
     } catch (err) {
-      console.error(err.message);
+      console.error(err);
       toast.error("Google login failed");
     }
   };

@@ -11,7 +11,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: process.env.Frontend_Url, // Array for multiple origins
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );

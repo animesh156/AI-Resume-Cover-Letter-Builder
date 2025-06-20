@@ -23,9 +23,6 @@ function Register() {
       await axios.post(
         `${import.meta.env.VITE_Backend_Url}/auth/register`,
         form,
-        {
-          withCredentials: true,
-        }
       );
 
       toast.success("Account created successfully!");
@@ -47,9 +44,6 @@ function Register() {
       await axios.post(
         `${import.meta.env.VITE_Backend_Url}/auth/firebase-login`,
         { token },
-        {
-          withCredentials: true,
-        }
       );
 
       toast.success("Signed in with Google");
