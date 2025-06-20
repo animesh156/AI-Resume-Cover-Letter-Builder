@@ -18,41 +18,48 @@ function Register() {
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post(
-        `https://resume-builder-backend-7odt.onrender.com/auth/register`,
-        form,
-      );
+  e.preventDefault();
+  try {
+    const res = await axios.post(
+      `https://resume-builder-backend-7odt.onrender.com/auth/register`,
+      form,
+      { withCredentials: true } // Important for cookies
+    );
 
-      toast.success("Account created successfully!");
-      navigate("/resume"); // Redirect to dashboard or resume builder
-    } catch (err) {
-      console.error(err);
-      toast.error(err.response?.data?.error || "Registration failed.");
-    }
-  };
+    // Save name to localStorage
+    localStorage.setItem("userName", res.data.name);
 
-  const handleGoogleSignup = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
+    toast.success("Account created successfully!");
+    navigate("/resume");
+  } catch (err) {
+    console.error(err);
+    toast.error(err.response?.data?.error || "Registration failed.");
+  }
+};
 
-      // Send token to backend to create session (JWT in HTTP-only cookie)
-      const token = await user.getIdToken();
+const handleGoogleSignup = async () => {
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    const user = result.user;
+    const token = await user.getIdToken();
 
-      await axios.post(
-        `https://resume-builder-backend-7odt.onrender.com/auth/firebase-login`,
-        { token },
-      );
+    const res = await axios.post(
+      `https://resume-builder-backend-7odt.onrender.com/auth/firebase-login`,
+      { token },
+      { withCredentials: true } // Send cookie with request
+    );
 
-      toast.success("Signed in with Google");
-      navigate("/resume");
-    } catch (err) {
-      console.error(err.message);
-      toast.error("Google login failed");
-    }
-  };
+    // Save name to localStorage
+    localStorage.setItem("userName", res.data.name);
+
+    toast.success("Signed in with Google");
+    navigate("/resume");
+  } catch (err) {
+    console.error(err.message);
+    toast.error("Google login failed");
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 to-blue-200 px-4">

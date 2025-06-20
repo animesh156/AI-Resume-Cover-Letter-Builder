@@ -10,43 +10,50 @@ function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleEmailLogin = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post(`https://resume-builder-backend-7odt.onrender.com/auth/login`, {
-        email,
-        password,
-      },);
+const handleEmailLogin = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await axios.post(
+      `https://resume-builder-backend-7odt.onrender.com/auth/login`,
+      { email, password },
+      { withCredentials: true } // Make sure cookies are sent
+    );
 
-      toast.success("Logged in successfully");
-      navigate("/resume");
-    } catch (err) {
-      console.error(err);
-      toast.error("Invalid credentials. Try again.");
-    }
-  };
+    // ✅ Save name in localStorage
+    localStorage.setItem("userName", res.data.name);
+
+    toast.success("Logged in successfully");
+    navigate("/resume");
+  } catch (err) {
+    console.error(err);
+    toast.error("Invalid credentials. Try again.");
+  }
+};
+
 
   const handleGoogleLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    const user = result.user;
+    const token = await user.getIdToken();
 
-      // Send token to backend to create session (JWT in HTTP-only cookie)
-      const token = await user.getIdToken();
+    const res = await axios.post(
+      `https://resume-builder-backend-7odt.onrender.com/auth/firebase-login`,
+      { token },
+      { withCredentials: true }
+    ); 
 
-    await axios.post(
-  `https://resume-builder-backend-7odt.onrender.com/auth/firebase-login`,
-  { token },
- 
-);
+    // ✅ Save name in localStorage
+    localStorage.setItem("userName", res.data.name);
 
-      toast.success("Signed in with Google");
-      navigate("/resume");
-    } catch (err) {
-      console.error(err);
-      toast.error("Google login failed");
-    }
-  };
+    toast.success("Signed in with Google");
+    navigate("/resume");
+  } catch (err) {
+    console.error(err);
+    toast.error("Google login failed");
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-200 px-4">

@@ -22,7 +22,7 @@ const generateToken = (res, userId) => {
 // @route POST /auth/register
 // @access Public
 const registerUser = async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
     return res
@@ -44,7 +44,7 @@ const registerUser = async (req, res) => {
     name,
     email,
     password: hashedPassword,
-    role,
+   
   });
 
   if (user) {
@@ -53,7 +53,7 @@ const registerUser = async (req, res) => {
       Id: user._id,
       name: user.name,
       email: user.email,
-      role: user.role,
+      
     });
   } else {
     res.status(400).json("Invalid user data");
@@ -73,7 +73,7 @@ const loginUser = async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      role: user.role,
+      
     });
   } else {
     return res.status(400).json({ error: "Invalid credentials" });
@@ -124,20 +124,20 @@ const firebaseLogin = async (req, res) => {
 };
 
 
-// controllers/authController.js
-const checkAuth = async (req, res) => {
-  const token = req.cookies.jwt;
-  if (!token) return res.status(401).json({ error: "Not authenticated" });
+// // controllers/authController.js
+// const checkAuth = async (req, res) => {
+//   const token = req.cookies.jwt;
+//   if (!token) return res.status(401).json({ error: "Not authenticated" });
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id).select("-password");
-    if (!user) throw new Error();
-    res.json({ authenticated: true, user });
-  } catch (err) {
-    res.status(401).json({ error: "Invalid token" });
-  }
-};
+//   try {
+//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//     const user = await User.findById(decoded.id).select("-password");
+//     if (!user) throw new Error();
+//     res.json({ authenticated: true, user });
+//   } catch (err) {
+//     res.status(401).json({ error: "Invalid token" });
+//   }
+// };
 
 
 module.exports = {
@@ -145,5 +145,5 @@ module.exports = {
   loginUser,
   logoutUser,
   firebaseLogin,
-  checkAuth
+  // checkAuth
 };
