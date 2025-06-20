@@ -13,7 +13,7 @@ function Login() {
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${import.meta.env.VITE_Backend_Url}/auth/login`, {
+      await axios.post(`https://resume-builder-backend-7odt.onrender.com/auth/login`, {
         email,
         password,
       },);
@@ -35,7 +35,7 @@ function Login() {
       const token = await user.getIdToken();
 
     await axios.post(
-  `${import.meta.env.VITE_Backend_Url}/auth/firebase-login`,
+  `https://resume-builder-backend-7odt.onrender.com/auth/firebase-login`,
   { token },
  
 );
