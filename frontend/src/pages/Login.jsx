@@ -16,6 +16,8 @@ function Login() {
       await axios.post(`${import.meta.env.VITE_Backend_Url}/auth/login`, {
         email,
         password,
+      },{
+         withCredentials: true,
       });
 
       toast.success("Logged in successfully");
@@ -34,7 +36,13 @@ function Login() {
       // Send token to backend to create session (JWT in HTTP-only cookie)
       const token = await user.getIdToken();
 
-      await axios.post(`${import.meta.env.VITE_Backend_Url}/auth/firebase-login`, { token });
+    await axios.post(
+  `${import.meta.env.VITE_Backend_Url}/auth/firebase-login`,
+  { token },
+  {
+    withCredentials: true, // ✅ allows cookies to be sent/received
+  }
+);
 
       toast.success("Signed in with Google");
       navigate("/resume");

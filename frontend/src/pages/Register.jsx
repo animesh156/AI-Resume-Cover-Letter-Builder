@@ -20,9 +20,13 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${import.meta.env.VITE_Backend_Url}/auth/register`, form, {
-        withCredentials: true,
-      });
+      await axios.post(
+        `${import.meta.env.VITE_Backend_Url}/auth/register`,
+        form,
+        {
+          withCredentials: true,
+        }
+      );
 
       toast.success("Account created successfully!");
       navigate("/resume"); // Redirect to dashboard or resume builder
@@ -40,7 +44,13 @@ function Register() {
       // Send token to backend to create session (JWT in HTTP-only cookie)
       const token = await user.getIdToken();
 
-      await axios.post(`${import.meta.env.VITE_Backend_Url}/auth/firebase-login`, { token });
+      await axios.post(
+        `${import.meta.env.VITE_Backend_Url}/auth/firebase-login`,
+        { token },
+        {
+          withCredentials: true,
+        }
+      );
 
       toast.success("Signed in with Google");
       navigate("/resume");
