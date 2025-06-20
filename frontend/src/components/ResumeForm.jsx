@@ -54,7 +54,7 @@ function ResumeForm() {
   const handleLogout = async () => {
     try {
       await axios.post(
-        `http://localhost:6884/auth/logout`,
+        `${import.meta.env.VITE_Backend_Url}/auth/logout`,
         {},
         {
           withCredentials: true,

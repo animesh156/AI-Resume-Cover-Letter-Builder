@@ -20,7 +20,7 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`http://localhost:6884/auth/register`, form, {
+      await axios.post(`${import.meta.env.VITE_Backend_Url}/auth/register`, form, {
         withCredentials: true,
       });
 
@@ -40,7 +40,7 @@ function Register() {
       // Send token to backend to create session (JWT in HTTP-only cookie)
       const token = await user.getIdToken();
 
-      await axios.post(`http://localhost:6884/auth/firebase-login`, { token });
+      await axios.post(`${import.meta.env.VITE_Backend_Url}/auth/firebase-login`, { token });
 
       toast.success("Signed in with Google");
       navigate("/resume");

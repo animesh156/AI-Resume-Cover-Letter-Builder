@@ -11,16 +11,16 @@ connectDB();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173"], // Array for multiple origins
+    origin: process.env.Frontend_Url, // Array for multiple origins
     credentials: true,
   })
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser())
+app.use(cookieParser());
 
 app.use("/api", geminiRoutes);
-app.use('/auth', authRoutes)
+app.use("/auth", authRoutes);
 
 app.listen(process.env.PORT || 5000, () => {
   console.log(`Server is running on port ${process.env.PORT || 5000}`);

@@ -13,7 +13,7 @@ function Login() {
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`http://localhost:6884/auth/login`, {
+      await axios.post(`${import.meta.env.VITE_Backend_Url}/auth/login`, {
         email,
         password,
       });
@@ -34,7 +34,7 @@ function Login() {
       // Send token to backend to create session (JWT in HTTP-only cookie)
       const token = await user.getIdToken();
 
-      await axios.post(`http://localhost:6884/auth/firebase-login`, { token });
+      await axios.post(`${import.meta.env.VITE_Backend_Url}/auth/firebase-login`, { token });
 
       toast.success("Signed in with Google");
       navigate("/resume");
