@@ -53,12 +53,13 @@ function ResumeForm() {
 
   const handleLogout = async () => {
     try {
+      localStorage.removeItem("userName")
       await axios.post(
         `${import.meta.env.VITE_Backend_Url}/auth/logout`,
         {},
        
       );
-
+       
       toast.success("🚪 Logged out successfully!");
       navigate("/login"); // or home page
     } catch (err) {
